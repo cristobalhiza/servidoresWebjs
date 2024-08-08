@@ -1,6 +1,6 @@
 // const http=require("http")
 import http from "http"
-import { heroes } from "./data/lotr.js"
+import { heroes } from "../data/lotr.js"
 
 //el servidor siempre se mantendrá activo escuchando desde una posición de memoria llamada puerto o port. Los 3000 o 8080 suelen estar libres.
 
