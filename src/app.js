@@ -17,3 +17,29 @@ app.get("/", (req, res)=>{
 app.get("/heroes",(req, res)=>{
     res.send(heroes)
 } )
+
+//Params
+
+app.get("/saludo/:nombre/:apellido", (req,res)=>{
+    console.log(req.params)
+
+    let {nombre, apellido}=req.params
+
+    let saludo=`Hola ${nombre} ${apellido}`
+
+    res.send(saludo)
+})
+
+// OJO QUE app.get("/saludo/:nombre", (req,res)=>{} SE INTERPRETA IGUAL QUE app.get("/saludo/:apellido", (req,res)=>{} 
+// POR LO QUE SI SE COLOCA UNO TRAS OTRO SIMPLEMENTE SE EJECUTARÁ EL PRIMERO, SALVO QUE SE CAMBIE LA RUTA O SE AGREGUE OTRA (El /SALUDO)
+
+app.get("/heroes/:id", (req,res)=>{
+    let{id}=req.params
+    id=Number(id) 
+    if(isNaN(id)){
+        return res.send("Error: el id no es un número")
+    }
+
+    let heroe=heroes.find((heroe)=>heroe.id===+id)
+    res.send(heroe)
+})
