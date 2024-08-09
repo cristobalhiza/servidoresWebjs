@@ -16,17 +16,42 @@ app.get("/", (req, res) => {
 app.get("/saludo", (req, res) => {
     console.log(req.query)
 
-    let {nombre, despedida}=req.query
-    if (!nombre){
+    let { nombre, despedida } = req.query
+    if (!nombre) {
         return res.send("Complete nombre via query param...!")
     }
 
-    let saludo=`${despedida?"Chao":"Hola"}, ${nombre}`
+    let saludo = `${despedida ? "Chao" : "Hola"}, ${nombre}`
 
     res.setHeader('Content-Type', 'text/plain')
     res.status(200).send(saludo)
 })
 
-const server = app.listen(PORT, () => 
-    console.log(`Server online en puerto ${PORT}`))
+app.get("/heroes", (req, res) => {
+    let { limit, skip } = req.query;
 
+    if (limit) {
+        limit = Number(limit);
+        if (isNaN(limit) || limit < 0) {
+            return res.status(400).send("Limit debe ser un número entero mayor o igual a 0");
+        }
+    } else {
+        limit = heroes.length;
+    }
+
+    if (skip) {
+        skip = Number(skip);
+        if (isNaN(skip) || skip < 0) {
+            return res.status(400).send("Skip debe ser un número entero mayor o igual a 0");
+        }
+    } else {
+        skip = 0;
+    }
+
+    let resultado = heroes.slice(skip, skip + limit);
+
+    res.send(resultado);
+});
+
+const server = app.listen(PORT, () =>
+    console.log(`Server online en puerto ${PORT}`))
