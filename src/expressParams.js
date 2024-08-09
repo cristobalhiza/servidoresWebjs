@@ -18,6 +18,8 @@ app.get("/heroes",(req, res)=>{
     res.send(heroes)
 } )
 
+
+
 //Params
 
 app.get("/saludo/:nombre/:apellido", (req,res)=>{
@@ -43,3 +45,4 @@ app.get("/heroes/:id", (req,res)=>{
     let heroe=heroes.find((heroe)=>heroe.id===+id)
     res.send(heroe)
 })
+
