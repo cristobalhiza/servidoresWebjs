@@ -8,6 +8,7 @@ const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+//esta última línea permitirá que el servidor pueda interpretar mejor los datos complejos que viajen desde la url y mapearlos correctamente en el req.query
 
 HeroesManager.path = "./src/data/lotr.json"
 
@@ -18,10 +19,10 @@ app.get("/", (req, res) => {
 
 app.get("/saludo", (req, res) => {
     console.log(req.query)
-    
+
     let { nombre, despedida } = req.query
     if (!nombre) {
-        return res.send("Complete nombre via query param.!")
+        return res.status(400).send("Complete nombre via query param.!")
     }
 
     let saludo = `${despedida ? "Chao" : "Hola"}, ${nombre}`
@@ -30,8 +31,8 @@ app.get("/saludo", (req, res) => {
     res.status(200).send(saludo)
 })
 
-app.get("/heroes", async(req, res) => {
-    let heroes=await HeroesManager.getHeroes()
+app.get("/heroes", async (req, res) => {
+    let heroes = await HeroesManager.getHeroes()
 
     let { limit, skip } = req.query;
 
@@ -55,18 +56,21 @@ app.get("/heroes", async(req, res) => {
 
     let resultado = heroes.slice(skip, skip + limit);
 
-    res.send(resultado);
+    res.status(200).send(resultado);
 });
 
-app.get("/heroes/:id", async(req, res)=>{
-    let {id} = req.params
-    id=Number(id)
-    if (isNaN(id)){
-        return res.send("id debe ser un número")
+app.get("/heroes/:id", async (req, res) => {
+    let { id } = req.params
+    id = Number(id)
+    if (isNaN(id)) {
+        return res.status(400).send("id debe ser un número")
     }
-let heroes=await HeroesManager.getHeroes()
-let heroe=heroes.find(h=>h.id===id)
-res.send(heroe)
+    let heroes = await HeroesManager.getHeroes()
+    let heroe = heroes.find(h => h.id === id)
+    if (!heroe) {
+        return res.status(404).send(`Heroe con id ${id} no encontrado`);
+    }
+    res.status(200).send(heroe)
 })
 
 const server = app.listen(PORT, () =>
